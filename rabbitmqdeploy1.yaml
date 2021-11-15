@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: rabbitmqdeploy1
+spec:
+ selector:
+   matchLabels:
+     app: rabbitmqdeploy1
+ template:
+   metadata:
+     labels:
+       app: rabbitmqdeploy1
+   spec:
+     containers:
+     - name: rabbitmqdeploy1
+       image: rabbitmq:3.9-management
+       resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmqdeploy1
+spec:
+  type: NodePort
+  selector:
+    app: rabbitmqdeploy1
+  ports:
+  - port: 15672
+    targetPort: 15672
+    nodePort: 32000
+    name: "management"
+  - name: "connection"
+    port: 5672
+    targetPort: 5672
+    nodePort: 31672
